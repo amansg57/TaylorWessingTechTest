@@ -1,0 +1,50 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Web Launch",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildWeb",
+            "program": "${workspaceFolder}/CompaniesWeb/bin/Debug/net6.0/CompaniesWeb.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": "Api Launch",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildApi",
+            "program": "${workspaceFolder}/CompaniesAPI/bin/Debug/net6.0/CompaniesAPI.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/CompaniesAPI",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ]
+}

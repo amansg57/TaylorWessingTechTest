@@ -1,0 +1,89 @@
+@model RegisterCompanyViewModel
+
+@{
+    ViewBag.Title = "Create Company";
+}
+
+<section class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <h2 class="h3 mb-0">@ViewBag.Title</h2>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("RegisterCompany", "CompaniesWeb", FormMethod.Post, new { @class = "needs-validation", novalidate = "" }))
+                    {
+                        <div class="form-floating mb-3">
+                            @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control", id = "CompanyName", placeholder = "Search Company Name" } })
+                            @Html.LabelFor(model => model.CompanyName, "Search Company")
+                            @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "invalid-feedback" })
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <select id="company-search-results" class="form-control">
+                                <option value="" disabled selected hidden>Search Results</option>
+                            </select>
+                            <label for="company-search-results">Select a Company</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            @Html.EditorFor(model => model.CompanyNumber, new { htmlAttributes = new { @class = "form-control", id = "CompanyNumber", placeholder = "Company Number" } })
+                            @Html.LabelFor(model => model.CompanyNumber)
+                            @Html.ValidationMessageFor(model => model.CompanyNumber, "", new { @class = "invalid-feedback" })
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", id = "Email", placeholder = "Email" } })
+                            @Html.LabelFor(model => model.Email)
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "invalid-feedback" })
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control", id = "PhoneNumber", placeholder = "Phone Number" } })
+                            @Html.LabelFor(model => model.PhoneNumber)
+                            @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "invalid-feedback" })
+                        </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            let debounceTimeout;
+            $('#CompanyName').on('input', function () {
+                var companyName = $(this).val();
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(function () {
+                    $.ajax({
+                        url: '/CompaniesWeb/SearchCompanies?companyName=' + encodeURIComponent(companyName),
+                        type: 'GET',
+                        success: function (data) {
+                            var searchResults = $('#company-search-results');
+                            searchResults.empty();
+                            $.each(data.items, function (index, value) {
+                                var option = $('<option>').text(value.title + ' - ' + value.addressSnippet).attr('value', value.companyNumber);
+                                searchResults.append(option);
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }, 500);
+            });
+            $('#company-search-results').on('change', function () {
+                var selectedCompanyNumber = $(this).val();
+                $('#CompanyNumber').val(selectedCompanyNumber);
+            });
+        });
+    </script>
+}
